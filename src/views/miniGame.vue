@@ -2,7 +2,7 @@
     <a-row :gutter="[8,16]"  >
       <a-col :span="12">
         <a-button type="primary" @click="setCardVisible(!modal1Visible)">
-          Test1
+          Test
         </a-button>
       </a-col>
     </a-row>
