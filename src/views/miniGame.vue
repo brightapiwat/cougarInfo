@@ -1,12 +1,31 @@
 <template>
     <a-row :gutter="[8,16]"  >
-      <a-col :span="12">
+      <a-col :span="24" style="margin-bottom: 10px;">
+        <a-row :gutter="[8,16]"  >
+          <a-col :span="12" :offset="6" >
+            <a-space align="center">
+              <a-progress  :percent="(defaultTime*100/1000)" :steps="10" />
+            </a-space>
+          </a-col>
+          <a-col :span="24">
+            <a-button-group>
+              <a-button @click="decline">
+                <template #icon><minus-outlined /></template>
+              </a-button>
+              <a-button @click="increase">
+                <template #icon><plus-outlined /></template>
+              </a-button>
+            </a-button-group>
+          </a-col>
+      </a-row>
+      </a-col>
+      <a-col :span="24" style="margin-bottom: 10px;">
         <a-button type="primary" @click="setCardVisible(!modal1Visible)">
           Test
         </a-button>
       </a-col>
     </a-row>
-    <a-card v-show="modal1Visible" style="text-align: center;">
+    <a-card v-show="modal1Visible" style="text-align: center;background-color: rgb(0 49 96);">
       <div v-show="!visibleCard">
         <a-button type="primary" @click="setModal1Visible(!visibleCard)">
           start
@@ -24,16 +43,22 @@
           <input @input="setInput($event, 1)" :disabled="true" ref="dataInp1" class="otp-input" type="text" :maxlength="1" :placeholder="setDataBinding.length != 0 ?setDataBinding[indexDataBinding][1] : ''" />
           <input @input="setInput($event, 2)" :disabled="true" ref="dataInp2" class="otp-input" type="text" :maxlength="1" :placeholder="setDataBinding.length != 0 ?setDataBinding[indexDataBinding][2] : ''" />
           <input @input="setInput($event, 3)" :disabled="true" ref="dataInp3" class="otp-input" type="text" :maxlength="1" :placeholder="setDataBinding.length != 0 ?setDataBinding[indexDataBinding][3] : ''" />
-          <a-progress :percent="(countTimer*100/500)" status="active" style="min-width: 50px;" :showInfo="false" />
+          <a-progress :percent="(countTimer*100/defaultTime)" status="active" style="min-width: 50px;" :showInfo="false" />
       </div>
-      <div>
+      <div style="color: white;">
         {{ secTimer }}
       </div>
       </a-card>
 </template>
 <script >
 import { defineComponent, ref, reactive } from 'vue';
+import { MinusOutlined, PlusOutlined } from '@ant-design/icons-vue';
 export default defineComponent({
+  components: {
+    MinusOutlined,
+    PlusOutlined,
+  },
+  
   data() {
     const defaultDataBinding = ['a', 's', 'd', 'w'];
     const modal1Visible = ref(false);
@@ -41,6 +66,7 @@ export default defineComponent({
     const dataValue = reactive([])
     const countTimer = ref(0)
     const timerStop = null
+    const defaultTime = 500
     const clearDataInp = () => {
       this.$refs['dataInp0'].value = ''
       this.$refs['dataInp1'].value = ''
@@ -65,7 +91,7 @@ export default defineComponent({
     const setTimer = () =>{ 
       this.timerStop = setInterval(() => {
         this.countTimer++
-        if (this.countTimer >= 500) {
+        if (this.countTimer >= this.defaultTime) {
           this.clearClassCorrectDataInp()
           this.addClassWrongDataInp()
           const clearData = setInterval(() => {
@@ -117,10 +143,21 @@ export default defineComponent({
       });
     }
 
+    const increase = () => {
+      const percent = this.defaultTime + 100;
+      this.defaultTime = percent >= 1000 ? 1000 : percent;
+    };
+
+    const decline = () => {
+      const percent = this.defaultTime - 100;
+      this.defaultTime = percent <= 300 ? 300 : percent;
+    };
+
     return {
       timerStop,
       addClassWrongDataInp,
       setTimer,
+      defaultTime,
       countTimer,
       modal1Visible,
       defaultDataBinding,
@@ -134,6 +171,8 @@ export default defineComponent({
       dataValue,
       clearClassCorrectDataInp,
       clearClassWrongDataInp,
+      increase,
+      decline,
     };
   },
   methods: {
@@ -215,18 +254,33 @@ export default defineComponent({
 </script>
 <style scoped>
 .otp-input {
-  width: 50px;
+  height: 100px;
+  width: 100px;
   margin: 5px;
+  font-size: xx-large;
   text-align: center;
   border: none;
   caret-color: transparent;
 }
 
+.otp-input:disabled {
+  background-color: gray;
+  color: white;
+}
+
+.otp-input::placeholder {
+  font-size: xx-large;
+}
+
+.otp-input:disabled::placeholder {
+  color: white;
+}
 .otp-input-correct {
-  background-color: #7fff74;
+  background-color: #7fff74 !important;
+  color: #000000  !important;
 }
 .otp-input-wrong {
-  background-color: #ff6c6c;
-  color: #ffffff;
+  background-color: #ff6c6c !important;
+  color: #000000  !important;
 }
 </style>
