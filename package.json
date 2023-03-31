@@ -12,6 +12,8 @@
   },
   "dependencies": {
     "ant-design-vue": "^3.2.16",
+    "bundler": "^0.8.0",
+    "jekyll": "^3.0.0-beta1",
     "vue": "^3.2.47",
     "vue-router": "^4.1.6"
   },
