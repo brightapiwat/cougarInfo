@@ -13,7 +13,7 @@ export default defineConfig({
     }
   },
   build: {
-    outputDir: 'docs',
-  publicPath: 'cougarInfo'
+    base: '/cougarInfo/',
+    outDir: 'docs'
   }
 })
